@@ -29,6 +29,7 @@
       "@typescript-eslint/no-unused-vars": ["error", {
         "argsIgnorePattern": "_"
       }],
+      "no-console": "off",
       "import/extensions": [
         "error",
         "ignorePackages",
