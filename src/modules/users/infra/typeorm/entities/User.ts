@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import uploadConfig from '@config/upload';
 
 import { Exclude, Expose } from 'class-transformer';
 
@@ -34,9 +35,20 @@ class User {
 
   @Expose({ name: 'avatar_url' })
   getAvatar_url(): string | null {
-    return this.avatar
-      ? `${process.env.APP_API_URL}/files/${this.avatar}`
-      : null;
+    if (!this.avatar) {
+      return null;
+    }
+
+    const { bucket, region } = uploadConfig.config.aws;
+
+    switch (uploadConfig.driver) {
+      case 'disk':
+        return `${process.env.APP_API_URL}/files/${this.avatar}`;
+      case 's3':
+        return `https://${bucket}.s3.${region}.amazonaws.com/${this.avatar}`;
+      default:
+        return null;
+    }
   }
 }
 
