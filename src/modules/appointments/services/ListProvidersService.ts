@@ -6,6 +6,7 @@ import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import AppError from '@shared/errors/AppError';
 
 import User from '@modules/users/infra/typeorm/entities/User';
+import { classToClass } from 'class-transformer';
 
 interface IRequest {
   user_id: string;
@@ -39,7 +40,10 @@ class ListProvidersService {
         throw new AppError('User not found.');
       }
 
-      await this.cacheProvider.save(`providers-list:${user_id}`, users);
+      await this.cacheProvider.save(
+        `providers-list:${user_id}`,
+        classToClass(users),
+      );
     }
 
     return users;
